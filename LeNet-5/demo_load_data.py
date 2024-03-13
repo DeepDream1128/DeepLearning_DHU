@@ -1,6 +1,5 @@
 import idx2numpy
 import numpy as np
-from tensorflow.keras.utils import to_categorical
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -8,15 +7,14 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Input, Dropout
 from keras.models import Model
-from keras.utils import np_utils
+from tensorflow.python.keras.utils.np_utils import to_categorical
 
 def get_local_mnist_data():
     # 读取本地的MNIST数据集文件
-    train_images_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/train-images.idx3-ubyte'
-    train_labels_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/train-labels.idx1-ubyte'
-    test_images_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/t10k-images.idx3-ubyte'
-    test_labels_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/t10k-labels.idx1-ubyte'
-
+    train_images_file = './Data/train-images.idx3-ubyte'
+    train_labels_file = './Data/train-labels.idx1-ubyte'
+    test_images_file = './Data/t10k-images.idx3-ubyte'
+    test_labels_file = './Data/t10k-labels.idx1-ubyte'
     # 使用idx2numpy读取数据集文件
     x_train_original = idx2numpy.convert_from_file(train_images_file)
     y_train_original = idx2numpy.convert_from_file(train_labels_file)
@@ -110,7 +108,7 @@ predictions = np.argmax(predictions, axis=1)
 print('前20张图片预测结果：', predictions[:20])
 
 # 预测结果图像可视化
-(x_train_original, y_train_original), (x_test_original, y_test_original) = get_local_mnist_data()
+_,_,_,_,x_test_original,y_test_original = get_local_mnist_data()
 def mnist_visualize_multiple_predict(start, end, length, width):
 
     for i in range(start, end):
@@ -126,7 +124,12 @@ def mnist_visualize_multiple_predict(start, end, length, width):
     plt.show()
 
 mnist_visualize_multiple_predict(start=0, end=9, length=3, width=3)
+if y_test_original.ndim > 1:  # 独热编码数组维度大于1
+    y_test_original = np.argmax(y_test_original, axis=1)
 
+# 如果predictions是独热编码，同样转换为整数标签
+if predictions.ndim > 1:
+    predictions = np.argmax(predictions, axis=1)
 # 混淆矩阵
 cm = confusion_matrix(y_test_original, predictions)
 cm = pd.DataFrame(cm)

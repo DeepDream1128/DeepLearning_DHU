@@ -6,7 +6,7 @@ from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import pandas as pd
 from tensorflow.keras import models, layers
-from tensorflow.keras.utils import to_categorical
+from tensorflow.python.keras.utils.np_utils import to_categorical
 import idx2numpy
 
 
@@ -15,10 +15,10 @@ from tensorflow.keras.layers import LSTM, Dense
 
 def get_local_mnist_data():
     # 读取本地的MNIST数据集文件
-    train_images_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/train-images.idx3-ubyte'
-    train_labels_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/train-labels.idx1-ubyte'
-    test_images_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/t10k-images.idx3-ubyte'
-    test_labels_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/t10k-labels.idx1-ubyte'
+    train_images_file = './Data/train-images.idx3-ubyte'
+    train_labels_file = './Data/train-labels.idx1-ubyte'
+    test_images_file = './Data/t10k-images.idx3-ubyte'
+    test_labels_file = './Data/t10k-labels.idx1-ubyte'
 
     # 使用idx2numpy读取数据集文件
     x_train_original = idx2numpy.convert_from_file(train_images_file)
@@ -117,7 +117,6 @@ print('前20张图片预测结果：', predictions[:20])
 
 # 预测结果图像可视化
 mnist_visualize_multiple_predict(start=0, end=9, length=3, width=3, predictions=predictions, true_labels=true_labels)
-
 # 混淆矩阵
 cm = confusion_matrix(true_labels, predictions)
 cm = pd.DataFrame(cm)
