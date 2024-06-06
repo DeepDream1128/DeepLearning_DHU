@@ -94,7 +94,7 @@ class CustomLSTM(Layer):
 # 定义模型
 model = Sequential()
 
-# 添加自定义LSTM层（隐藏单元数量为256）
+# 添加自定义LSTM层（隐藏单元数量为128）
 model.add(CustomLSTM(hidden_size=128))
 
 # 添加输出层
@@ -108,7 +108,7 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 
 # 训练模型
-train_history = model.fit(x_train_lstm, y_train, epochs=20, batch_size=32, validation_data=(x_val_lstm, y_val))
+train_history = model.fit(x_train_lstm, y_train, epochs=50, batch_size=512, validation_data=(x_val_lstm, y_val))
 
 
 

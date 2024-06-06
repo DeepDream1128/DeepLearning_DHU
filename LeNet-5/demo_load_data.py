@@ -79,10 +79,10 @@ model = LeNet5()
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 # 开始网络训练（定义训练数据与验证数据、定义训练代数，定义训练批大小）
-train_history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=10, batch_size=32, verbose=2)
+train_history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=50, batch_size=512, verbose=2)
 
 # 模型保存
-model.save('50epochs_train')
+model.save('50epochs_train_lenet5')
 
 # 定义训练过程可视化函数（训练集损失、验证集损失、训练集精度、验证集精度）
 def show_train_history(train_history, train, validation):

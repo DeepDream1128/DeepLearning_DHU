@@ -7,8 +7,12 @@ import seaborn as sns
 from keras.models import Model
 from tensorflow.python.keras.utils.np_utils import to_categorical
 import multiprocessing
-multiprocessing.set_start_method('spawn')
+from tensorflow.keras.datasets import mnist
+import tensorflow as tf
+# 加载MNIST数据集
 
+multiprocessing.set_start_method('spawn')
+print(tf.config.experimental.list_physical_devices('GPU'))
 def get_local_mnist_data():
     # 读取本地的MNIST数据集文件
     train_images_file = './Data/train-images.idx3-ubyte'
@@ -43,6 +47,7 @@ def get_local_mnist_data():
 
 # 调用函数获取本地数据集
 x_train, y_train, x_val, y_val, x_test, y_test = get_local_mnist_data()
+(train_images, train_labels), (test_images, test_labels) = mnist.load_data()
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Flatten, Dense
 
@@ -52,6 +57,8 @@ def FullyConnectedModel():
     x = Flatten()(input_shape)
     x = Dense(128, activation='relu')(x)
     x = Dense(64, activation='relu')(x)
+    x = Dense(32, activation='relu')(x)
+    x = Dense(16, activation='relu')(x)
     x = Dense(10, activation='softmax')(x)
 
     model = Model(input_shape, x)
@@ -69,10 +76,10 @@ model = FullyConnectedModel()
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 # 开始网络训练（定义训练数据与验证数据、定义训练代数，定义训练批大小）
-train_history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=20, batch_size=32, verbose=2)
+train_history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=50, batch_size=512, verbose=2)
 
 # 模型保存
-model.save('50epochs_train')
+model.save('50epochs_train_NN')
 
 # 定义训练过程可视化函数（训练集损失、验证集损失、训练集精度、验证集精度）
 def show_train_history(train_history, train, validation):
@@ -115,4 +122,22 @@ def mnist_visualize_multiple_predict(start, end, length, width):
     plt.show()
 
 mnist_visualize_multiple_predict(start=0, end=9, length=3, width=3)
+from sklearn.metrics import confusion_matrix
+if predictions.ndim > 1:
+    predictions = np.argmax(predictions, axis=1)
+# 混淆矩阵
+y_test_labels = np.argmax(y_test_original, axis=1)
 
+cm = confusion_matrix(y_test_labels, predictions)
+cm = pd.DataFrame(cm)
+class_names = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+
+def plot_confusion_matrix(cm):
+    plt.figure(figsize=(10, 10))
+    sns.heatmap(cm, cmap='Oranges', linecolor='black', linewidth=1, annot=True, fmt='', xticklabels=class_names, yticklabels=class_names)
+    plt.xlabel("Predicted")
+    plt.ylabel("Actual")
+    plt.title("Confusion Matrix")
+    plt.show()
+
+plot_confusion_matrix(cm)

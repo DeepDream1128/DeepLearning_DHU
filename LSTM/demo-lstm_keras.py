@@ -63,9 +63,9 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 
 # 训练模型
-train_history = model.fit(x_train_lstm, y_train, epochs=20, batch_size=32, validation_data=(x_val_lstm, y_val))
+train_history = model.fit(x_train_lstm, y_train, epochs=50, batch_size=512, validation_data=(x_val_lstm, y_val))
 
-model.save('lstm_train')
+model.save('lstm_train_keras')
 
 # 评估模型
 test_loss, test_accuracy = model.evaluate(x_test_lstm, y_test)
